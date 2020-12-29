@@ -1,0 +1,39 @@
+/**
+ * @class LetsPack
+ */
+export class LetsPack {
+    /**
+     * @callback onFileContent
+     * @param {string} fileName the name of the file, wothout the path and extension
+     * @param {string} fileContent the content of the file
+     * @returns {void}
+     */
+    /**
+     * @type {{css: sting|null, js: string|null}}
+     */
+    outputFiles: {
+        css: any | null;
+        js: string | null;
+    };
+    /**
+     * Bundels the provided array of scripts or scripts from a directory into one minified file
+     * @param {string | string[]} scripts the input files or directory
+     * @param {string} output the output file path with file name
+     * @return {this}
+     */
+    scripts(scripts: string | string[], output: string): this;
+    /**
+     * Processes the provided style with PostCss, PostCss-Import, Autoprefixer and Csso.
+     * Because of PostCss-Import you don't need to provide multiple files to create bundles, just add an '@import <path>' tag at begining of your main css.
+     * @param {sting} style your main css path and name
+     * @param {string} output the output file path with file name
+     * @return {this}
+     */
+    styles(style: any, output: string): this;
+    /**
+     * Creates a mix.manifest.json for laravel to vesion its static files
+     * @return {void}
+     */
+    version(): void;
+    #private;
+}

@@ -1,0 +1,17 @@
+{
+  "name": "letspack",
+  "version": "1.0.0",
+  "author": "Dani",
+  "license": "MIT",
+  "main": "src/letsPack.js",
+  "types": "src/letsPack.d.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "autoprefixer": "^10.1.0",
+    "md5-file": "^5.0.0",
+    "postcss": "^8.2.1",
+    "postcss-csso": "^5.0.0",
+    "postcss-import": "^14.0.0",
+    "terser": "^5.5.1"
+  }
+}
