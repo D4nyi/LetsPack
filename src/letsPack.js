@@ -24,7 +24,7 @@ class LetsPack {
    */
 
   /**
-   * @type {{css: sting|null, js: string|null}}
+   * @type {{css: string|null, js: string|null}}
    */
   outputFiles = {
     css: null,
@@ -72,7 +72,7 @@ class LetsPack {
   /**
    * Processes the provided style with PostCss, PostCss-Import, Autoprefixer and Csso.
    * Because of PostCss-Import you don't need to provide multiple files to create bundles, just add an '@import <path>' tag at begining of your main css.
-   * @param {sting} style your main css path and name
+   * @param {string} style your main css path and name
    * @param {string} output the output file path with file name
    * @return {this}
    */
@@ -96,7 +96,7 @@ class LetsPack {
           to: output,
         })
         .then((result) => {
-          fs.writeFile("./dist/app.min.css", result.css, (err) => {
+          fs.writeFile(output, result.css, (err) => {
             if (err) console.log(err);
             this.#printSize(output, this.outputFiles.css);
           });

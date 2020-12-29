@@ -9,10 +9,10 @@ export class LetsPack {
      * @returns {void}
      */
     /**
-     * @type {{css: sting|null, js: string|null}}
+     * @type {{css: string|null, js: string|null}}
      */
     outputFiles: {
-        css: any | null;
+        css: string | null;
         js: string | null;
     };
     /**
@@ -25,11 +25,11 @@ export class LetsPack {
     /**
      * Processes the provided style with PostCss, PostCss-Import, Autoprefixer and Csso.
      * Because of PostCss-Import you don't need to provide multiple files to create bundles, just add an '@import <path>' tag at begining of your main css.
-     * @param {sting} style your main css path and name
+     * @param {string} style your main css path and name
      * @param {string} output the output file path with file name
      * @return {this}
      */
-    styles(style: any, output: string): this;
+    styles(style: string, output: string): this;
     /**
      * Creates a mix.manifest.json for laravel to vesion its static files
      * @return {void}
