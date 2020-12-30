@@ -138,10 +138,9 @@ class LetsPack {
 
       fs.writeFile(
         path.resolve("/public/mix-manifest.json"),
-        result.css,
+        JSON.stringify(mix),
         (err) => {
           if (err) console.log(err);
-          this.#printSize(output, this.outputFiles.css);
         }
       );
     });
