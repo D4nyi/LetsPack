@@ -108,7 +108,7 @@ class LetsPack {
   }
 
   /**
-   * Creates a mix.manifest.json for laravel to vesion its static files
+   * Creates a mix-manifest.json for laravel to vesion its static files
    * @return {void}
    */
   version() {
@@ -135,6 +135,15 @@ class LetsPack {
         const fileName = cb(object);
         mix[fileName] = fileName + "?id=" + (result.js || result.css);
       });
+
+      fs.writeFile(
+        path.resolve("/public/mix-manifest.json"),
+        result.css,
+        (err) => {
+          if (err) console.log(err);
+          this.#printSize(output, this.outputFiles.css);
+        }
+      );
     });
   }
 

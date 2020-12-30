@@ -1,6 +1,6 @@
 {
   "name": "letspack",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "author": "Dániel Szöllősi",
   "license": "MIT",
   "keywords": [
@@ -22,6 +22,9 @@
   ],
   "main": "src/letsPack.js",
   "types": "src/letsPack.d.ts",
+  "scripts": {
+    "build": "tsc src/letsPack.js --declaration --allowJs --emitDeclarationOnly --outDir src"
+  },
   "dependencies": {
     "autoprefixer": "^10.1.0",
     "md5-file": "^5.0.0",
@@ -30,5 +33,7 @@
     "postcss-import": "^14.0.0",
     "terser": "^5.5.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "typescript": "^4.1.3"
+  }
 }

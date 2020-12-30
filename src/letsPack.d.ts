@@ -31,7 +31,7 @@ export class LetsPack {
      */
     styles(style: string, output: string): this;
     /**
-     * Creates a mix.manifest.json for laravel to vesion its static files
+     * Creates a mix-manifest.json for laravel to vesion its static files
      * @return {void}
      */
     version(): void;

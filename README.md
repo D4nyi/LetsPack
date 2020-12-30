@@ -3,8 +3,9 @@
 A minimal tool for bundling and minifing scripts and styles.
 
 ## Usage
+
 ```javascript
-const { LetsPack } = require("terser-runner");
+const { LetsPack } = require("letspack");
 const letsPack = new LetsPack();
 
 letsPack
