@@ -3,20 +3,7 @@
  */
 export class LetsPack {
     /**
-     * @callback onFileContent
-     * @param {string} fileName the name of the file, wothout the path and extension
-     * @param {string} fileContent the content of the file
-     * @returns {void}
-     */
-    /**
-     * @type {{css: string|null, js: string|null}}
-     */
-    outputFiles: {
-        css: string | null;
-        js: string | null;
-    };
-    /**
-     * Bundels the provided array of scripts or scripts from a directory into one minified file
+     * Bundles the provided array of scripts or scripts from a directory into one minified file
      * @param {string | string[]} scripts the input files or directory
      * @param {string} output the output file path with file name
      * @return {this}

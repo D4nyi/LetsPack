@@ -18,7 +18,7 @@ const terserConfig = {
 class LetsPack {
   /**
    * @callback onFileContent
-   * @param {string} fileName the name of the file, wothout the path and extension
+   * @param {string} fileName the name of the file, without the path and extension
    * @param {string} fileContent the content of the file
    * @returns {void}
    */
@@ -32,7 +32,7 @@ class LetsPack {
   };
 
   /**
-   * Bundels the provided array of scripts or scripts from a directory into one minified file
+   * Bundles the provided array of scripts or scripts from a directory into one minified file
    * @param {string | string[]} scripts the input files or directory
    * @param {string} output the output file path with file name
    * @return {this}
@@ -90,7 +90,7 @@ class LetsPack {
         console.error(err);
         return;
       }
-      postcss([importer, autoprefixer, csso])
+      postcss([autoprefixer, importer, csso])
         .process(css, {
           from: style,
           to: output,
@@ -112,28 +112,24 @@ class LetsPack {
    * @return {void}
    */
   version() {
-    const jsPromise = md5(this.outputFiles.js).then((hash) => ({ js: hash }));
-    const cssPromise = md5(this.outputFiles.css).then((hash) => ({
-      css: hash,
-    }));
+    const js = md5(this.outputFiles.js).then((hash) => ({ js: hash }));
+    const css = md5(this.outputFiles.css).then((hash) => ({ css: hash }));
 
-    Promise.all([jsPromise, cssPromise]).then((results) => {
+    Promise.all([js, css]).then((results) => {
       const mix = {};
-      /** @param {string} fileName */
-      const cb = (fileName) => {
-        if (fileName.startsWith(".")) {
-          fileName = fileName.substring(1);
-        }
-        if (fileName.includes("\\")) {
-          fileName = fileName.replace("\\", "/");
-        }
-        return fileName;
-      };
 
       results.forEach((result) => {
-        const object = result.js ? this.outputFiles.js : this.outputFiles.css;
-        const fileName = cb(object);
-        mix[fileName] = fileName + "?id=" + (result.js || result.css);
+        let filePath = result.js ? this.outputFiles.js : this.outputFiles.css;
+        if (filePath.includes("\\")) {
+          filePath = filePath.replaceAll("\\", "/");
+        }
+        const fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+
+        if (result.js) {
+          mix[`/js/${fileName}`] = `${fileName}?id=${result.js}`;
+        } else {
+          mix[`/css/${fileName}`] = `${fileName}?id=${result.css}`;
+        }
       });
 
       fs.writeFile(
