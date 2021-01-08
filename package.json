@@ -1,7 +1,18 @@
 {
   "name": "letspack",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "author": "Dániel Szöllősi",
+  "homepage": "https://github.com/D4nyi/LetsPack#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/D4nyi/LetsPack.git"
+  },
+  "bugs": {
+    "url": "https://github.com/D4nyi/LetsPack/issues"
+  },
+  "engines": {
+    "node": ">=12.0.0 <15.0.0"
+  },
   "license": "MIT",
   "keywords": [
     "JavaScript",

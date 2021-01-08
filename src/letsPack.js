@@ -133,7 +133,7 @@ class LetsPack {
       });
 
       fs.writeFile(
-        path.resolve("/public/mix-manifest.json"),
+        path.resolve("public/mix-manifest.json"),
         JSON.stringify(mix),
         (err) => {
           if (err) console.log(err);
