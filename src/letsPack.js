@@ -175,17 +175,22 @@ class LetsPack {
       if (err) {
         return console.error(err);
       }
-      name = name.substring(name.lastIndexOf("/") + 1);
+      name = name.substring(name.lastIndexOf("/") + 1) + ":";
+      const mod = name.length % 8;
+      const indent = mod > 0 ? 8 - mod : 0;
+      for (let i = 0; i < indent; i++) {
+        name += " ";
+      }
       /** @param {number} size */
       const round = (size) => +(Math.round(size + "e+2") + "e-2");
       if (stats.size < 1024) {
-        console.log(`${name}:\t${stats.size} byte`);
+        console.log(`${name}\t${stats.size} byte`);
       } else if (stats.size < 1048576) {
         // 1024 * 1024 = 1Mb
-        console.log(`${name}:\t${round(stats.size / 1024)} Kb`);
+        console.log(`${name}\t${round(stats.size / 1024)} Kb`);
       } else {
         // >1Mb
-        console.log(`${name}:\t${round(stats.size / 1048576)} Mb`);
+        console.log(`${name}\t${round(stats.size / 1048576)} Mb`);
       }
     });
   }
