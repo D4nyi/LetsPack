@@ -126,15 +126,15 @@ class LetsPack {
         const fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
 
         if (result.js) {
-          mix[`/js/${fileName}`] = `${fileName}?id=${result.js}`;
+          mix[`/js/${fileName}`] = `/js/${fileName}?id=${result.js}`;
         } else {
-          mix[`/css/${fileName}`] = `${fileName}?id=${result.css}`;
+          mix[`/css/${fileName}`] = `/css/${fileName}?id=${result.css}`;
         }
       });
 
       fs.writeFile(
         path.resolve("public/mix-manifest.json"),
-        JSON.stringify(mix),
+        JSON.stringify(mix, null, 4),
         (err) => {
           if (err) console.log(err);
         }
