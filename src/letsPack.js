@@ -5,12 +5,21 @@ const importer = require("postcss-import");
 const csso = require("postcss-csso");
 const { writeFile, readFile, readFileSync, readdirSync, stat } = require("fs");
 const { resolve, join } = require("path");
+const { URL } = require("url");
+const https = require("https");
 const md5 = require("md5-file");
 
 const terserConfig = {
   mangle: true,
   compress: {},
 };
+
+/**
+ * @callback onFileContent
+ * @param {string} fileName the name of the file, without the path and extension
+ * @param {string} fileContent the content of the file
+ * @returns {void}
+ */
 
 /**
  * @class LetsPack
@@ -37,10 +46,6 @@ class LetsPack {
     const codes = {};
 
     /**
-     * @callback onFileContent
-     * @param {string} fileName the name of the file, without the path and extension
-     * @param {string} fileContent the content of the file
-     * @returns {void}
      * @type {onFileContent}
      */
     const cb = (name, content) => {
@@ -48,10 +53,7 @@ class LetsPack {
     };
 
     if (Array.isArray(scripts)) {
-      this.#readFiles(
-        scripts.map((script) => resolve(script)),
-        cb
-      );
+      this.#readFiles(scripts, cb);
     } else if (typeof scripts === "string") {
       scripts = resolve(scripts);
       this.#readDirectoryFiles(scripts, cb);
@@ -59,12 +61,14 @@ class LetsPack {
       throw Error("Uknown type for 'scripts'!");
     }
 
-    minify(codes, terserConfig).then((options) =>
-      writeFile(output, options.code, (err) => {
-        if (err) console.log(err);
-        this.#printSize(output, this.#outputFiles.js);
-      })
-    );
+    setTimeout(() => {
+      minify(codes, terserConfig).then((options) =>
+        writeFile(output, options.code, (err) => {
+          if (err) console.log(err);
+          this.#printSize(output, this.#outputFiles.js);
+        })
+      );
+    }, 1250);
 
     return this;
   }
@@ -160,8 +164,40 @@ class LetsPack {
    * @param {onFileContent} onFileContent
    */
   #readFiles(files, onFileContent) {
-    files.forEach((fileName) => {
-      onFileContent(fileName, readFileSync(fileName, "utf-8"));
+    files.forEach((file) => {
+      this.#isURL(file)
+        ? this.#download(file, onFileContent)
+        : onFileContent(resolve(file), readFileSync(file, "utf-8"));
+    });
+  }
+
+  /**
+   * Test is the provided string is a valid URL
+   * @param {string} link
+   * @returns {boolean}
+   */
+  #isURL(link) {
+    try {
+      const url = new URL(link);
+      return url.protocol ? "https:" === url.protocol : false;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  /**
+   * Downloads a CDN file
+   * @param {string} file
+   * @param {onFileContent} onFileContent
+   */
+  #download(file, onFileContent) {
+    const name = file.substring(file.lastIndexOf("/") + 1);
+    let content = "";
+    https.get(file, (response) => {
+      response.addListener("data", (data) => (content += data.toString()));
+      response.addListener("end", () => {
+        onFileContent(name, content);
+      });
     });
   }
 
