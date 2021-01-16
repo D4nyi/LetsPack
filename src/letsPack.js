@@ -3,8 +3,8 @@ const postcss = require("postcss");
 const autoprefixer = require("autoprefixer");
 const importer = require("postcss-import");
 const csso = require("postcss-csso");
-const fs = require("fs");
-const path = require("path");
+const { writeFile, readFile, readFileSync, readdirSync, stat } = require("fs");
+const { resolve, join } = require("path");
 const md5 = require("md5-file");
 
 const terserConfig = {
@@ -17,16 +17,9 @@ const terserConfig = {
  */
 class LetsPack {
   /**
-   * @callback onFileContent
-   * @param {string} fileName the name of the file, without the path and extension
-   * @param {string} fileContent the content of the file
-   * @returns {void}
-   */
-
-  /**
    * @type {{css: string|null, js: string|null}}
    */
-  outputFiles = {
+  #outputFiles = {
     css: null,
     js: null,
   };
@@ -38,31 +31,38 @@ class LetsPack {
    * @return {this}
    */
   scripts(scripts, output) {
-    this.outputFiles.js = output;
-    output = path.resolve(output);
+    this.#outputFiles.js = output;
+    output = resolve(output);
 
     const codes = {};
-    /** @type {onFileContent} */
+
+    /**
+     * @callback onFileContent
+     * @param {string} fileName the name of the file, without the path and extension
+     * @param {string} fileContent the content of the file
+     * @returns {void}
+     * @type {onFileContent}
+     */
     const cb = (name, content) => {
       codes[name] = content;
     };
 
     if (Array.isArray(scripts)) {
       this.#readFiles(
-        scripts.map((script) => path.resolve(script)),
+        scripts.map((script) => resolve(script)),
         cb
       );
     } else if (typeof scripts === "string") {
-      scripts = path.resolve(scripts);
+      scripts = resolve(scripts);
       this.#readDirectoryFiles(scripts, cb);
     } else {
       throw Error("Uknown type for 'scripts'!");
     }
 
     minify(codes, terserConfig).then((options) =>
-      fs.writeFile(output, options.code, (err) => {
+      writeFile(output, options.code, (err) => {
         if (err) console.log(err);
-        this.#printSize(output, this.outputFiles.js);
+        this.#printSize(output, this.#outputFiles.js);
       })
     );
 
@@ -77,15 +77,15 @@ class LetsPack {
    * @return {this}
    */
   styles(style, output) {
-    this.outputFiles.css = output;
-    output = path.resolve(output);
+    this.#outputFiles.css = output;
+    output = resolve(output);
 
     if (typeof style !== "string") {
       throw Error("Uknown type for 'styles'!");
     }
 
-    style = path.resolve(style);
-    fs.readFile(style, (err, css) => {
+    style = resolve(style);
+    readFile(style, (err, css) => {
       if (err) {
         console.error(err);
         return;
@@ -96,9 +96,9 @@ class LetsPack {
           to: output,
         })
         .then((result) => {
-          fs.writeFile(output, result.css, (err) => {
+          writeFile(output, result.css, (err) => {
             if (err) console.log(err);
-            this.#printSize(output, this.outputFiles.css);
+            this.#printSize(output, this.#outputFiles.css);
           });
         })
         .catch((err) => console.error(err));
@@ -112,14 +112,14 @@ class LetsPack {
    * @return {void}
    */
   version() {
-    const js = md5(this.outputFiles.js).then((hash) => ({ js: hash }));
-    const css = md5(this.outputFiles.css).then((hash) => ({ css: hash }));
+    const js = md5(this.#outputFiles.js).then((hash) => ({ js: hash }));
+    const css = md5(this.#outputFiles.css).then((hash) => ({ css: hash }));
 
     Promise.all([js, css]).then((results) => {
       const mix = {};
 
       results.forEach((result) => {
-        let filePath = result.js ? this.outputFiles.js : this.outputFiles.css;
+        let filePath = result.js ? this.#outputFiles.js : this.#outputFiles.css;
         if (filePath.includes("\\")) {
           filePath = filePath.replaceAll("\\", "/");
         }
@@ -132,8 +132,8 @@ class LetsPack {
         }
       });
 
-      fs.writeFile(
-        path.resolve("public/mix-manifest.json"),
+      writeFile(
+        resolve("public/mix-manifest.json"),
         JSON.stringify(mix, null, 4),
         (err) => {
           if (err) console.log(err);
@@ -148,9 +148,9 @@ class LetsPack {
    * @param {onFileContent} onFileContent
    */
   #readDirectoryFiles(dirName, onFileContent) {
-    const files = fs
-      .readdirSync(dirName, "utf-8")
-      .map((file) => path.join(dirName, file));
+    const files = readdirSync(dirName, "utf-8").map((file) =>
+      join(dirName, file)
+    );
     this.#readFiles(files, onFileContent);
   }
 
@@ -161,7 +161,7 @@ class LetsPack {
    */
   #readFiles(files, onFileContent) {
     files.forEach((fileName) => {
-      onFileContent(fileName, fs.readFileSync(fileName, "utf-8"));
+      onFileContent(fileName, readFileSync(fileName, "utf-8"));
     });
   }
 
@@ -171,7 +171,7 @@ class LetsPack {
    * @param {string} name
    */
   #printSize(file, name) {
-    fs.stat(file, (err, stats) => {
+    stat(file, (err, stats) => {
       if (err) {
         return console.error(err);
       }
@@ -196,6 +196,4 @@ class LetsPack {
   }
 }
 
-module.exports = {
-  LetsPack,
-};
+module.exports = { LetsPack };
