@@ -37,7 +37,7 @@
     "build": "tsc src/letsPack.js --declaration --allowJs --emitDeclarationOnly --outDir src"
   },
   "dependencies": {
-    "autoprefixer": "^10.2.3",
+    "autoprefixer": "^10.2.4",
     "md5-file": "^5.0.0",
     "postcss": "^8.2.4",
     "postcss-csso": "^5.0.0",
