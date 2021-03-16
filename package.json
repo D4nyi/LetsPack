@@ -1,6 +1,6 @@
 {
   "name": "letspack",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "author": "Dániel Szöllősi",
   "homepage": "https://github.com/D4nyi/LetsPack#readme",
   "repository": {
@@ -39,7 +39,7 @@
   "dependencies": {
     "autoprefixer": "^10.2.5",
     "md5-file": "^5.0.0",
-    "postcss": "^8.2.7",
+    "postcss": "^8.2.8",
     "postcss-csso": "^5.0.0",
     "postcss-import": "^14.0.0",
     "terser": "^5.6.0"
