@@ -23,6 +23,7 @@ const terserConfig = {
 
 /**
  * @class LetsPack
+ * Provide a simpler web asset packaging then LaravelMix
  */
 class LetsPack {
   /**

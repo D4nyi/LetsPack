@@ -1,5 +1,6 @@
 /**
  * @class LetsPack
+ * Provide a simpler web asset packaging then LaravelMix
  */
 export class LetsPack {
     /**

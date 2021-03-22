@@ -1,0 +1,13 @@
+{
+  // Change this to match your project
+  "include": ["src/letsPack.js"],
+  "compilerOptions": {
+    "lib": ["es2020"],
+    "allowJs": true,
+    "declaration": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "emitDeclarationOnly": true,
+    "outDir": "types"
+  }
+}

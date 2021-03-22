@@ -32,9 +32,9 @@
     "Versioning"
   ],
   "exports": "./src/letsPack.js",
-  "types": "./src/letsPack.d.ts",
+  "types": "./types/letsPack.d.ts",
   "scripts": {
-    "build": "tsc src/letsPack.js --declaration --allowJs --emitDeclarationOnly --outDir src"
+    "build": "tsc --project ./tsconfig.json"
   },
   "dependencies": {
     "autoprefixer": "^10.2.5",
@@ -42,7 +42,7 @@
     "postcss": "^8.2.8",
     "postcss-csso": "^5.0.0",
     "postcss-import": "^14.0.0",
-    "terser": "^5.6.0"
+    "terser": "^5.6.1"
   },
   "devDependencies": {
     "typescript": "^4.2.3"
