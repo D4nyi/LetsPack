@@ -23,5 +23,4 @@ export class LetsPack {
      * @return {void}
      */
     version(): void;
-    #private;
 }
