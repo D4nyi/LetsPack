@@ -173,7 +173,7 @@ class LetsPack {
   }
 
   /**
-   * Test is the provided string is a valid URL
+   * Test if the provided string is a valid URL
    * @param {string} link
    * @returns {boolean}
    */
