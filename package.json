@@ -1,6 +1,6 @@
 {
   "name": "letspack",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "author": "Dániel Szöllősi",
   "homepage": "https://github.com/D4nyi/LetsPack#readme",
   "repository": {
@@ -37,14 +37,14 @@
     "build": "tsc --project ./tsconfig.json"
   },
   "dependencies": {
-    "autoprefixer": "^10.2.6",
+    "autoprefixer": "^10.3.2",
     "md5-file": "^5.0.0",
-    "postcss": "^8.3.5",
+    "postcss": "^8.3.6",
     "postcss-csso": "^5.0.1",
     "postcss-import": "^14.0.2",
-    "terser": "^5.7.0"
+    "terser": "^5.7.1"
   },
   "devDependencies": {
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.5"
   }
 }
