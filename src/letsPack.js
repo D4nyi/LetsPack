@@ -6,7 +6,7 @@ const csso = require("postcss-csso");
 const { writeFile, readFile, readFileSync, readdirSync, stat } = require("fs");
 const { resolve, join } = require("path");
 const { URL } = require("url");
-const https = require("https");
+const { get } = require("https");
 const md5 = require("md5-file");
 
 const terserConfig = {
@@ -194,7 +194,7 @@ class LetsPack {
   #download(file, onFileContent) {
     const name = file.substring(file.lastIndexOf("/") + 1);
     let content = "";
-    https.get(file, (response) => {
+    get(file, (response) => {
       response.addListener("data", (data) => (content += data.toString()));
       response.addListener("end", () => {
         onFileContent(name, content);

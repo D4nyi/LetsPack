@@ -1,6 +1,6 @@
 {
   "name": "letspack",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "author": "Dániel Szöllősi",
   "homepage": "https://github.com/D4nyi/LetsPack#readme",
   "repository": {
@@ -45,6 +45,6 @@
     "terser": "^5.7.2"
   },
   "devDependencies": {
-    "typescript": "^4.4.2"
+    "typescript": "^4.4.3"
   }
 }
