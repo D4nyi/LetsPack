@@ -196,9 +196,7 @@ class LetsPack {
     let content = "";
     get(file, (response) => {
       response.addListener("data", (data) => (content += data.toString()));
-      response.addListener("end", () => {
-        onFileContent(name, content);
-      });
+      response.addListener("end", () => onFileContent(name, content));
     });
   }
 
