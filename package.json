@@ -37,9 +37,9 @@
     "build": "tsc --project ./tsconfig.json"
   },
   "dependencies": {
-    "autoprefixer": "^10.3.5",
+    "autoprefixer": "^10.3.6",
     "md5-file": "^5.0.0",
-    "postcss": "^8.3.7",
+    "postcss": "^8.3.8",
     "postcss-csso": "^5.0.1",
     "postcss-import": "^14.0.2",
     "terser": "^5.9.0"
