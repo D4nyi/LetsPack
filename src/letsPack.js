@@ -40,7 +40,7 @@ class LetsPack {
    * @param {string} output the output file path with file name
    * @return {this}
    */
-  scripts(scripts, output) {
+  async scripts(scripts, output) {
     this.#outputFiles.js = output;
     output = resolve(output);
 
@@ -62,14 +62,11 @@ class LetsPack {
       throw Error("Uknown type for 'scripts'!");
     }
 
-    setTimeout(() => {
-      minify(codes, terserConfig).then((options) =>
-        writeFile(output, options.code, (err) => {
-          if (err) console.log(err);
-          this.#printSize(output, this.#outputFiles.js);
-        })
-      );
-    }, 1250);
+    const options = await minify(codes, terserConfig);
+    writeFile(output, options.code, (err) => {
+      if (err) console.log(err);
+      this.#printSize(output, this.#outputFiles.js);
+    });
 
     return this;
   }
@@ -90,23 +87,27 @@ class LetsPack {
     }
 
     style = resolve(style);
-    readFile(style, (err, css) => {
+    readFile(style, async (err, css) => {
       if (err) {
         console.error(err);
         return;
       }
-      postcss([autoprefixer, importer, csso])
-        .process(css, {
+
+      let result;
+      try {
+        result = await postcss([autoprefixer, importer, csso]).process(css, {
           from: style,
           to: output,
-        })
-        .then((result) => {
-          writeFile(output, result.css, (err) => {
-            if (err) console.log(err);
-            this.#printSize(output, this.#outputFiles.css);
-          });
-        })
-        .catch((err) => console.error(err));
+        });
+      } catch (err) {
+        console.error(err);
+        return this;
+      }
+
+      writeFile(output, result.css, (err) => {
+        if (err) console.log(err);
+        this.#printSize(output, this.#outputFiles.css);
+      });
     });
 
     return this;
@@ -117,34 +118,36 @@ class LetsPack {
    * @return {void}
    */
   version() {
-    const js = md5(this.#outputFiles.js).then((hash) => ({ js: hash }));
-    const css = md5(this.#outputFiles.css).then((hash) => ({ css: hash }));
+    const js = await md5(this.#outputFiles.js);
+    const css = await md5(this.#outputFiles.css);
+    const mix = {};
+    /**
+     * @param {string} filePath 
+     */
+    const processFile = filePath => {
+      if (filePath.includes("\\")) {
+        filePath = filePath.replaceAll("\\", "/");
+      }
 
-    Promise.all([js, css]).then((results) => {
-      const mix = {};
+      const fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
 
-      results.forEach((result) => {
-        let filePath = result.js ? this.#outputFiles.js : this.#outputFiles.css;
-        if (filePath.includes("\\")) {
-          filePath = filePath.replaceAll("\\", "/");
-        }
-        const fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+      if (fileName.endsWith('.js')) {
+        mix[`/js/${fileName}`] = `/js/${fileName}?id=${js}`;
+      } else {
+        mix[`/css/${fileName}`] = `/css/${fileName}?id=${css}`;
+      }
+    };
 
-        if (result.js) {
-          mix[`/js/${fileName}`] = `/js/${fileName}?id=${result.js}`;
-        } else {
-          mix[`/css/${fileName}`] = `/css/${fileName}?id=${result.css}`;
-        }
-      });
+    processFile(this.#outputFiles.js);
+    processFile(this.#outputFiles.css);
 
-      writeFile(
-        resolve("public/mix-manifest.json"),
-        JSON.stringify(mix, null, 4),
-        (err) => {
-          if (err) console.log(err);
-        }
-      );
-    });
+    writeFile(
+      resolve("public/mix-manifest.json"),
+      JSON.stringify(mix, null, 4),
+      (err) => {
+        if (err) console.log(err);
+      }
+    );
   }
 
   /**
