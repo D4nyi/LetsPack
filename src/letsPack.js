@@ -63,10 +63,7 @@ class LetsPack {
     }
 
     const options = await minify(codes, terserConfig);
-    writeFile(output, options.code, (err) => {
-      if (err) console.log(err);
-      this.#printSize(output, this.#outputFiles.js);
-    });
+    this.#writeToFile(output, options.code, this.#outputFiles.js);
 
     return this;
   }
@@ -79,35 +76,34 @@ class LetsPack {
    * @return {this}
    */
   styles(style, output) {
-    this.#outputFiles.css = output;
-    output = resolve(output);
-
     if (typeof style !== "string") {
       throw Error("Uknown type for 'styles'!");
     }
 
+    this.#outputFiles.css = output;
+    output = resolve(output);
+
     style = resolve(style);
     readFile(style, async (err, css) => {
       if (err) {
-        console.error(err);
-        return;
+        return console.error(err);
       }
 
-      let result;
       try {
-        result = await postcss([autoprefixer, importer, csso]).process(css, {
-          from: style,
-          to: output,
-        });
+        /**
+         * @type {{css: string}}
+         */
+        const result = await postcss([autoprefixer, importer, csso]).process(
+          css,
+          {
+            from: style,
+            to: output,
+          }
+        );
+        this.#writeToFile(output, result.css, this.#outputFiles.css);
       } catch (err) {
-        console.error(err);
-        return this;
+        return console.error(err);
       }
-
-      writeFile(output, result.css, (err) => {
-        if (err) console.log(err);
-        this.#printSize(output, this.#outputFiles.css);
-      });
     });
 
     return this;
@@ -122,16 +118,16 @@ class LetsPack {
     const css = await md5(this.#outputFiles.css);
     const mix = {};
     /**
-     * @param {string} filePath 
+     * @param {string} filePath
      */
-    const processFile = filePath => {
+    const processFile = (filePath) => {
       if (filePath.includes("\\")) {
         filePath = filePath.replaceAll("\\", "/");
       }
 
       const fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
 
-      if (fileName.endsWith('.js')) {
+      if (fileName.endsWith(".js")) {
         mix[`/js/${fileName}`] = `/js/${fileName}?id=${js}`;
       } else {
         mix[`/css/${fileName}`] = `/css/${fileName}?id=${css}`;
@@ -141,12 +137,11 @@ class LetsPack {
     processFile(this.#outputFiles.js);
     processFile(this.#outputFiles.css);
 
-    writeFile(
+    this.#writeToFile(
       resolve("public/mix-manifest.json"),
       JSON.stringify(mix, null, 4),
-      (err) => {
-        if (err) console.log(err);
-      }
+      null,
+      false
     );
   }
 
@@ -183,7 +178,7 @@ class LetsPack {
   #isURL(link) {
     try {
       const url = new URL(link);
-      return url.protocol ? "https:" === url.protocol : false;
+      return !!url.protocol && "https:" === url.protocol;
     } catch (error) {
       return false;
     }
@@ -230,6 +225,19 @@ class LetsPack {
         // >1Mb
         console.log(`${name}\t${round(stats.size / 1048576)} Mb`);
       }
+    });
+  }
+
+  /**
+   * @param {string} output
+   * @param {string|undefined} result
+   * @param {string|null} files
+   * @param {boolean} printSize
+   */
+  #writeToFile(output, result, files, printSize = true) {
+    writeFile(output, result, (err) => {
+      if (err) return console.log(err);
+      if (printSize) this.#printSize(output, files);
     });
   }
 }
