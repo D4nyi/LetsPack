@@ -38,7 +38,7 @@ class LetsPack {
    * Bundles the provided array of scripts or scripts from a directory into one minified file
    * @param {string | string[]} scripts the input files or directory
    * @param {string} output the output file path with file name
-   * @return {this}
+   * @return {Promise<this>}
    */
   async scripts(scripts, output) {
     this.#outputFiles.js = output;
@@ -73,9 +73,9 @@ class LetsPack {
    * Because of PostCss-Import you don't need to provide multiple files to create bundles, just add an '@import <path>' tag at begining of your main css.
    * @param {string} style your main css path and name
    * @param {string} output the output file path with file name
-   * @return {this}
+   * @return {Promise<this>}
    */
-  styles(style, output) {
+  async styles(style, output) {
     if (typeof style !== "string") {
       throw Error("Uknown type for 'styles'!");
     }
@@ -111,9 +111,9 @@ class LetsPack {
 
   /**
    * Creates a mix-manifest.json for Laravel to vesion its static files
-   * @return {void}
+   * @return {Promise<void>}
    */
-  version() {
+  async version() {
     const js = await md5(this.#outputFiles.js);
     const css = await md5(this.#outputFiles.css);
     const mix = {};

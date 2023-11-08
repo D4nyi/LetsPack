@@ -2,7 +2,7 @@
   // Change this to match your project
   "include": ["src/letsPack.js"],
   "compilerOptions": {
-    "lib": ["es2021"],
+    "lib": ["ES2023", "DOM"],
     "allowJs": true,
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
