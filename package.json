@@ -42,7 +42,7 @@
     "postcss": "^8.4.16",
     "postcss-csso": "^6.0.0",
     "postcss-import": "^15.0.0",
-    "terser": "^5.15.0"
+    "terser": "^5.25.0"
   },
   "devDependencies": {
     "typescript": "^5.2.0"
